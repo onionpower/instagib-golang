@@ -2,29 +2,33 @@ package main
 
 import "fmt"
 
-type RingBuffer struct {
-	a    []int
-	head int
-}
-
-func (rb *RingBuffer) Init(size int) {
-	rb.a = make([]int, size)
-	rb.head = 0
-}
-
-func (rb *RingBuffer) Push(i int) {
-	rb.a[rb.head] = i
-	rb.head++
-	if rb.head > len(rb.a)-1 {
-		rb.head = 0
+func reverse(x int) int {
+	neg := false
+	if x < 0 {
+		x *= -1
+		neg = true
 	}
+	rem := 0
+	r := 0
+	for ; x > 0; x /= 10 {
+		rem = x % 10
+		r *= 10
+		r += rem
+	}
+
+	if r > 2147483647 {
+		return 0
+	}
+
+	if neg {
+		r *= -1
+	}
+
+	return r
 }
 
 func main() {
-	rb := RingBuffer{}
-	rb.Init(5)
-	for i := 0; i < 12; i++ {
-		rb.Push(i)
-	}
-	fmt.Println(rb)
+	fmt.Println(reverse(123456))
+	fmt.Println(reverse(-321))
+	fmt.Println(reverse(120))
 }
