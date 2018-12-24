@@ -1,34 +1,36 @@
 package main
 
-import "fmt"
+import (
+	"container/list"
+	"fmt"
+)
 
-func reverse(x int) int {
-	neg := false
+func isPalindrome(x int) bool {
 	if x < 0 {
-		x *= -1
-		neg = true
+		return false
 	}
-	rem := 0
-	r := 0
+	l := list.New()
+	digits := 0
 	for ; x > 0; x /= 10 {
-		rem = x % 10
-		r *= 10
-		r += rem
+		l.PushBack(x % 10)
+		digits++
 	}
-
-	if r > 2147483647 {
-		return 0
+	ls := l.Front()
+	rs := l.Back()
+	for rs != ls {
+		if rs.Value != ls.Value {
+			return false
+		}
+		rs = rs.Prev()
+		ls = ls.Next()
 	}
-
-	if neg {
-		r *= -1
-	}
-
-	return r
+	return true
 }
 
 func main() {
-	fmt.Println(reverse(123456))
-	fmt.Println(reverse(-321))
-	fmt.Println(reverse(120))
+	fmt.Println(isPalindrome(123))
+	fmt.Println(isPalindrome(-123))
+	fmt.Println(isPalindrome(1221))
+	fmt.Println(isPalindrome(-1221))
+	fmt.Println(isPalindrome(12321))
 }
