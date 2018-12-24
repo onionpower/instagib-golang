@@ -1,36 +1,28 @@
 package main
 
 import (
-	"container/list"
 	"fmt"
 )
 
 func isPalindrome(x int) bool {
-	if x < 0 {
+	if x < 0 || x != 0 && x%10 == 0 {
 		return false
 	}
-	l := list.New()
-	digits := 0
-	for ; x > 0; x /= 10 {
-		l.PushBack(x % 10)
-		digits++
+	y := 0
+	for ; x > y; x /= 10 {
+		y *= 10
+		y += x % 10
 	}
-	ls := l.Front()
-	rs := l.Back()
-	for rs != ls {
-		if rs.Value != ls.Value {
-			return false
-		}
-		rs = rs.Prev()
-		ls = ls.Next()
-	}
-	return true
+
+	return x == y || x == y/10
 }
 
 func main() {
-	fmt.Println(isPalindrome(123))
 	fmt.Println(isPalindrome(-123))
+	fmt.Println(isPalindrome(123))
+	fmt.Println(isPalindrome(1321))
+	fmt.Println(isPalindrome(1021))
+	fmt.Println(isPalindrome(101))
 	fmt.Println(isPalindrome(1221))
-	fmt.Println(isPalindrome(-1221))
-	fmt.Println(isPalindrome(12321))
+	fmt.Println(isPalindrome(1001))
 }
