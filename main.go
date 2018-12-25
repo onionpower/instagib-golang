@@ -2,27 +2,38 @@ package main
 
 import (
 	"fmt"
+	"sync"
 )
 
-func isPalindrome(x int) bool {
-	if x < 0 || x != 0 && x%10 == 0 {
-		return false
-	}
-	y := 0
-	for ; x > y; x /= 10 {
-		y *= 10
-		y += x % 10
-	}
+type A struct {
+	Value string
+}
 
-	return x == y || x == y/10
+func write(wg *sync.WaitGroup, val string, ch chan<- A) {
+	defer wg.Done()
+	fmt.Println(val, "will be written")
+	ch <- A{Value: val}
+	fmt.Println(val, "was written")
+	fmt.Println(len(ch))
+}
+
+func read(ch <-chan A) {
+	fmt.Println(len(ch))
+	for v := range ch {
+		fmt.Println(v)
+	}
 }
 
 func main() {
-	fmt.Println(isPalindrome(-123))
-	fmt.Println(isPalindrome(123))
-	fmt.Println(isPalindrome(1321))
-	fmt.Println(isPalindrome(1021))
-	fmt.Println(isPalindrome(101))
-	fmt.Println(isPalindrome(1221))
-	fmt.Println(isPalindrome(1001))
+	var wg sync.WaitGroup
+	wg.Add(3)
+	deps := make(chan A, 3)
+	defer close(deps)
+	go write(&wg, "A", deps)
+	go write(&wg, "B", deps)
+	go write(&wg, "C", deps)
+	wg.Wait()
+	go read(deps)
+	fmt.Println("done")
+	fmt.Scanln()
 }
