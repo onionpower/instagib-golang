@@ -17,7 +17,7 @@ func permute(nums []int) [][]int {
 }
 
 func main() {
-	nums := []int{1, 2, 3, 4}
+	nums := []int{1, 2, 3}
 	p := permute(nums)
 
 	fmt.Printf("%v", p)
