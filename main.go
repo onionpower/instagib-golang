@@ -3,17 +3,19 @@ package main
 import "fmt"
 
 func permute(nums []int) [][]int {
-	if len(nums) == 1 {
-		return append(make([][]int, 0), nums)
+	fp := make([][]int, 0)
+	for i, v1 := range nums {
+		p := make([]int, 0)
+		p = append(p, v1)
+		for j, v2 := range nums {
+			if i == j {
+				continue
+			}
+			p = append(p, v2)
+		}
+		fp = append(fp, p)
 	}
-	lv := nums[0]
-	r := permute(nums[1:])
-	l := []int{lv}
-	l = append(l, r[0]...)
-	r = append(r)
-	r[0] = append(r[0], lv)
-	r = append(r, l)
-	return r
+	return fp
 }
 
 func main() {
