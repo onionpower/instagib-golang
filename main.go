@@ -2,13 +2,13 @@ package main
 
 import "fmt"
 
-func factorial(n int) int {
-	if n == 1 {
-		return 1
+func reverse(l []int) []int {
+	if len(l) == 1 {
+		return l
 	}
-	return n * factorial(n-1)
+	return append(reverse(l[1:]), l[0])
 }
 
 func main() {
-	fmt.Println(factorial(4))
+	fmt.Printf("%v", reverse([]int{1, 2, 3, 4}))
 }
