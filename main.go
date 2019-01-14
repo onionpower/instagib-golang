@@ -1,40 +1,41 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+)
 
-func romanToInt(s string) int {
-	w := map[uint8]int{
-		'I': 1,
-		'V': 5,
-		'X': 10,
-		'L': 50,
-		'C': 100,
-		'D': 500,
-		'M': 1000,
+// TODO examine finding the shortest first
+func longestCommonPrefix(strs []string) string {
+	strs_len := len(strs)
+	if strs_len == 0 {
+		return ""
+	}
+	if strs_len == 1 {
+		return strs[0]
 	}
 
-	if s == "" {
-		return 0
-	}
-	r := 0
-	greatest := 0
-	for i := len(s) - 1; i >= 0; i-- {
-		cw := w[s[i]]
-		if cw > greatest {
-			r += cw
-			greatest = cw
-		} else if cw < greatest {
-			r -= cw
-		} else {
-			r += cw
+	var prefix []uint8
+	// each char
+	for ci := 0; ; ci++ {
+		if ci >= len(strs[0]) {
+			return string(prefix)
 		}
+
+		c := strs[0][ci]
+		// each word
+		for wi := 1; wi < strs_len; wi++ {
+			w := strs[wi]
+			if ci >= len(w) {
+				return string(prefix)
+			}
+			if w[ci] != c {
+				return string(prefix)
+			}
+		}
+		prefix = append(prefix, c)
 	}
-	return r
 }
 
 func main() {
-	fmt.Println(romanToInt("IIIV"))
-	fmt.Println(romanToInt("IX"))
-	fmt.Println(romanToInt("LVIII"))
-	fmt.Println(romanToInt("IIIL"))
+	fmt.Println(longestCommonPrefix([]string{"abcd", "abc", "ab", "e"}))
 }
