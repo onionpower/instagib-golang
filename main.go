@@ -15,44 +15,15 @@ func mergeTwoLists(l1 *ListNode, l2 *ListNode) *ListNode {
 	if l1 == nil {
 		return l2
 	}
-
 	if l2 == nil {
 		return l1
 	}
-
-	if l1 == nil || l2 == nil {
-		return nil
-	}
-
-	return mergeTwoListsInternal(l1, l2)
-}
-
-func mergeTwoListsInternal(l1 *ListNode, l2 *ListNode) *ListNode {
-	lowest, left, right := nextLowest(l1, l2)
-	res := &ListNode{lowest.Val, nil}
-	it := res
-	lowest, left, right = nextLowest(left, right)
-	for ; lowest != nil; lowest, left, right = nextLowest(left, right) {
-		it.Next = &ListNode{lowest.Val, nil}
-		it = it.Next
-	}
-	return res
-}
-
-func nextLowest(l1 *ListNode, l2 *ListNode) (*ListNode, *ListNode, *ListNode) {
-	if l1 == nil && l2 == nil {
-		return nil, nil, nil
-	}
-	if l1 == nil {
-		return l2, l1, l2.Next
-	}
-	if l2 == nil {
-		return l1, l1.Next, l2
-	}
 	if l1.Val < l2.Val {
-		return l1, l1.Next, l2
+		l1.Next = mergeTwoLists(l1.Next, l2)
+		return l1
 	}
-	return l2, l1, l2.Next
+	l2.Next = mergeTwoLists(l1, l2.Next)
+	return l2
 }
 
 func convToLl(ints []int) *ListNode {
@@ -87,4 +58,6 @@ func main() {
 	fmt.Println(llJoin(l1))
 	res := mergeTwoLists(l0, l1)
 	fmt.Println(llJoin(res))
+	fmt.Println(llJoin(mergeTwoLists(nil, nil)))
+	fmt.Println(llJoin(mergeTwoLists(nil, convToLl([]int{1, 2}))))
 }
