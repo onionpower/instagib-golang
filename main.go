@@ -3,23 +3,17 @@ package main
 import "fmt"
 
 func removeDuplicates(nums []int) int {
-	if nums == nil || len(nums) == 0 {
+	if nums == nil {
 		return 0
 	}
-	return removeDuplicatesInternal(&nums, 0, 1)
-}
-
-func removeDuplicatesInternal(p_nums *[]int, it int, next int) int {
-	nums := *p_nums
-	if next >= len(nums) {
-		return 1
+	ix := 0
+	for i := 1; i < len(nums); i++ {
+		if nums[ix] != nums[i] {
+			ix++
+			nums[ix] = nums[i]
+		}
 	}
-	if nums[it] == nums[next] {
-		return removeDuplicatesInternal(p_nums, it, next+1)
-	}
-	it++
-	nums[it] = nums[next]
-	return 1 + removeDuplicatesInternal(p_nums, it, next+1)
+	return ix + 1
 }
 
 func main() {
