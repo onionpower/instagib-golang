@@ -1,82 +1,90 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+	"strconv"
+	"strings"
+)
 
-type stack struct {
-	s  []uint8
-	it int
+type ListNode struct {
+	Val  int
+	Next *ListNode
 }
 
-func (s *stack) push(val uint8) {
-	s.it++
-	s.s[s.it] = val
-}
-
-func (s *stack) peek() (bool, uint8) {
-	if s.it >= len(s.s) || s.it == -1 || s.s[s.it] == 0 {
-		return false, 0
+func mergeTwoLists(l1 *ListNode, l2 *ListNode) *ListNode {
+	if l1 == nil {
+		return l2
 	}
 
-	return true, s.s[s.it]
-}
-
-func (s *stack) pop() uint8 {
-	poped_ix := s.it
-	s.it--
-	return s.s[poped_ix]
-}
-
-const opening_brace = ' '
-
-func isValid(s string) bool {
-	s_len := len(s)
-	if s_len == 0 {
-		return true
-	}
-	if s_len == 1 {
-		return false
+	if l2 == nil {
+		return l1
 	}
 
-	m := makeMap()
-	st := &stack{make([]uint8, s_len), -1}
-	for i := 0; i < s_len; i++ {
-		cur_brace := s[i]
-		open_pair, is_brace := m[cur_brace]
-		// not a brace -> exit
-		if !is_brace {
-			return false
-		}
-		// discover closing brace for opening later
-		if open_pair == opening_brace {
-			st.push(cur_brace)
-			continue
-		}
-		// match last opened brace with current's opening pair
-		ok, last_opened := st.peek()
-		if !ok || last_opened != open_pair {
-			return false
-		}
-		st.pop()
+	if l1 == nil || l2 == nil {
+		return nil
 	}
 
-	has_content, _ := st.peek()
-	return !has_content
+	return mergeTwoListsInternal(l1, l2)
 }
 
-func makeMap() map[uint8]uint8 {
-	m := make(map[uint8]uint8, 6)
-	m['('] = opening_brace
-	m['['] = opening_brace
-	m['{'] = opening_brace
-	m[')'] = '('
-	m[']'] = '['
-	m['}'] = '{'
-	return m
+func mergeTwoListsInternal(l1 *ListNode, l2 *ListNode) *ListNode {
+	lowest, left, right := nextLowest(l1, l2)
+	res := &ListNode{lowest.Val, nil}
+	it := res
+	lowest, left, right = nextLowest(left, right)
+	for ; lowest != nil; lowest, left, right = nextLowest(left, right) {
+		it.Next = &ListNode{lowest.Val, nil}
+		it = it.Next
+	}
+	return res
+}
+
+func nextLowest(l1 *ListNode, l2 *ListNode) (*ListNode, *ListNode, *ListNode) {
+	if l1 == nil && l2 == nil {
+		return nil, nil, nil
+	}
+	if l1 == nil {
+		return l2, l1, l2.Next
+	}
+	if l2 == nil {
+		return l1, l1.Next, l2
+	}
+	if l1.Val < l2.Val {
+		return l1, l1.Next, l2
+	}
+	return l2, l1, l2.Next
+}
+
+func convToLl(ints []int) *ListNode {
+	if ints == nil || len(ints) == 0 {
+		return nil
+	}
+	first := &ListNode{ints[0], nil}
+	it := first
+	for i := 1; i < len(ints); i++ {
+		it.Next = &ListNode{ints[i], nil}
+		it = it.Next
+	}
+	return first
+}
+
+func llJoin(ll *ListNode) string {
+	if ll == nil {
+		return ""
+	}
+
+	str := strings.Builder{}
+	for node := ll; node != nil; node = node.Next {
+		str.WriteString(strconv.Itoa(node.Val))
+	}
+	return str.String()
 }
 
 func main() {
-	fmt.Println(isValid("{(}[()]"))
-	fmt.Println(isValid("{}[()]"))
-	fmt.Println(isValid("}{"))
-	fmt.Println(isValid("(("))
+	l0 := convToLl([]int{1, 2, 3})
+	fmt.Println(llJoin(l0))
+	l1 := convToLl([]int{2, 4, 5})
+	fmt.Println(llJoin(l1))
+	res := mergeTwoLists(l0, l1)
+	fmt.Println(llJoin(res))
 }
