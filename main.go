@@ -2,26 +2,23 @@ package main
 
 import (
 	"fmt"
-	"sort"
 )
 
 func removeElement(nums []int, val int) int {
-	sort.Slice(nums, func(i, j int) bool {
-		if nums[i] == val {
-			return false
-		}
-		if nums[j] == val {
-			return true
-		}
-		return nums[i] < nums[j]
-	})
-	newLen := len(nums) - 1
-	for ; newLen >= 0; newLen-- {
-		if nums[newLen] != val {
-			break
+	if nums == nil {
+		return 0
+	}
+
+	start, end := 0, len(nums)-1
+	for start <= end {
+		if nums[start] == val {
+			nums[end], nums[start] = nums[start], nums[end]
+			end--
+		} else {
+			start++
 		}
 	}
-	return newLen + 1
+	return start
 }
 
 func main() {
@@ -30,6 +27,7 @@ func main() {
 	printRemoved([]int{1, 3, 3, 4}[:], 5)
 	printRemoved([]int{1, 3, 3, 4}[:], 0)
 	printRemoved([]int{3, 3}[:], 3)
+	printRemoved([]int{3}[:], 3)
 }
 
 func printRemoved(nums []int, val int) {
