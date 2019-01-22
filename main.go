@@ -1,27 +1,42 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+	"sort"
+)
 
-func removeDuplicates(nums []int) int {
-	if nums == nil {
-		return 0
-	}
-	ix := 0
-	for i := 1; i < len(nums); i++ {
-		if nums[ix] != nums[i] {
-			ix++
-			nums[ix] = nums[i]
+func removeElement(nums []int, val int) int {
+	sort.Slice(nums, func(i, j int) bool {
+		if nums[i] == val {
+			return false
+		}
+		if nums[j] == val {
+			return true
+		}
+		return nums[i] < nums[j]
+	})
+	newLen := len(nums) - 1
+	for ; newLen >= 0; newLen-- {
+		if nums[newLen] != val {
+			break
 		}
 	}
-	return ix + 1
+	return newLen + 1
 }
 
 func main() {
-	fmt.Println(removeDuplicates([]int{1, 1, 2}))
-	fmt.Println(removeDuplicates([]int{1, 2, 3}))
-	fmt.Println(removeDuplicates([]int{1, 2, 2, 3}))
-	fmt.Println(removeDuplicates([]int{1, 2, 3, 4}))
-	fmt.Println(removeDuplicates([]int{2, 2, 3, 4}))
-	fmt.Println(removeDuplicates([]int{2, 2, 3, 3}))
-	fmt.Println(removeDuplicates([]int{0, 0, 1, 1, 1, 2, 2, 3, 3, 4}))
+	printRemoved([]int{0, 1, 2, 2, 3, 0, 4, 2}[:], 2)
+	printRemoved([]int{1, 3, 3, 4}[:], 3)
+	printRemoved([]int{1, 3, 3, 4}[:], 5)
+	printRemoved([]int{1, 3, 3, 4}[:], 0)
+	printRemoved([]int{3, 3}[:], 3)
+}
+
+func printRemoved(nums []int, val int) {
+	fmt.Printf("%v\n%v", nums, val)
+	fmt.Println()
+	length := removeElement(nums[:], val)
+	fmt.Printf("%v", nums[0:length])
+	fmt.Println()
+	fmt.Println()
 }
