@@ -2,35 +2,60 @@ package main
 
 import (
 	"fmt"
+	"strings"
 )
 
-func searchInsert(nums []int, target int) int {
-	if len(nums) == 1 {
-		if nums[0] < target {
-			return 1
-		}
+func lengthOfLastWord(s string) int {
+	if len(s) == 0 {
 		return 0
 	}
-	pivot := len(nums) / 2
-	pv := nums[pivot]
-	if pv == target {
-		return pivot
+	symbols := 0
+	for i := len(s) - 1; i >= 0; i-- {
+		if s[i] == ' ' && symbols != 0 {
+			return symbols
+		}
+		if s[i] != ' ' {
+			symbols++
+		}
 	}
-	if pv > target {
-		return searchInsert(nums[:pivot], target)
+	return symbols
+}
+
+type Submission struct {
+	ok     bool
+	length int
+}
+
+type Res []Submission
+
+var res Res
+
+func (r Res) print() {
+	ok := true
+	rep := strings.Builder{}
+	for i, v := range r {
+		ok = ok && v.ok
+		rep.WriteString(fmt.Sprintf("%v: %v is %v\n", i, v.length, v.ok))
 	}
-	return pivot + searchInsert(nums[pivot:], target)
+	fmt.Printf("%v\n", ok)
+	fmt.Println(rep.String())
 }
 
 func main() {
-	printSln([]int{1, 3, 5, 6}[:], 5)
-	printSln([]int{1, 3, 5, 6}[:], 1)
-	printSln([]int{1, 3, 5, 6}[:], 7)
-	printSln([]int{1, 3, 5, 6}[:], 0)
-	printSln([]int{1, 3, 5, 6}[:], 2) // TODO wrong
+	res = Res{}
+	sln("a", 1)
+	sln("asdf", 4)
+	sln("", 0)
+	sln(" ", 0)
+	sln("   ", 0)
+	sln("   ", 0)
+	sln("as   ", 2)
+	sln("a   asf   ", 3)
+	sln("asd   asdf", 4)
+	res.print()
 }
 
-func printSln(nums []int, target int) {
-	fmt.Printf("%v, target: %v\n", nums, target)
-	fmt.Printf("supposed pos is %v\n", searchInsert(nums, target))
+func sln(s string, expected int) {
+	l := lengthOfLastWord(s)
+	res = append(res, Submission{l == expected, l})
 }
