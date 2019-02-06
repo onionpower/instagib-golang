@@ -2,60 +2,82 @@ package main
 
 import (
 	"fmt"
-	"strings"
 )
 
-func lengthOfLastWord(s string) int {
-	if len(s) == 0 {
+func maxOf2(a int, b int) int {
+	if a > b {
+		return a
+	}
+	return b
+}
+
+func maxOf3(a int, b int, c int) int {
+	if a > b {
+		return maxOf2(a, c)
+	}
+	return maxOf2(b, c)
+}
+
+func maxIntersSum(l int, r int, p int) int {
+	s := maxOf2(l+p, p)
+	s = maxOf2(s+r, s)
+	return s
+}
+
+func maxSubArray(nums []int) int {
+	if len(nums) == 0 {
 		return 0
 	}
-	symbols := 0
-	for i := len(s) - 1; i >= 0; i-- {
-		if s[i] == ' ' && symbols != 0 {
-			return symbols
-		}
-		if s[i] != ' ' {
-			symbols++
+	if len(nums) == 1 {
+		return nums[0]
+	}
+	if len(nums) == 2 {
+		return maxOf3(nums[0], nums[1], nums[0]+nums[1])
+	}
+	pivot := len(nums) / 2
+	maxLeft := maxLeftSum(nums[0:pivot])
+	maxRight := maxRightSum(nums[pivot+1:])
+	pivotSum :=
+		maxOf3(maxSubArray(nums[0:pivot]),
+			maxSubArray(nums[pivot+1:]),
+			maxIntersSum(maxLeft, maxRight, nums[pivot]))
+	return pivotSum
+}
+func maxRightSum(ints []int) int {
+	if len(ints) == 0 {
+		return 0
+	}
+	m := ints[0]
+	tm := m
+	for i := 1; i < len(ints); i++ {
+		tm += ints[i]
+		if tm > m {
+			m = tm
 		}
 	}
-	return symbols
+	return m
 }
 
-type Submission struct {
-	ok     bool
-	length int
-}
-
-type Res []Submission
-
-var res Res
-
-func (r Res) print() {
-	ok := true
-	rep := strings.Builder{}
-	for i, v := range r {
-		ok = ok && v.ok
-		rep.WriteString(fmt.Sprintf("%v: %v is %v\n", i, v.length, v.ok))
+func maxLeftSum(ints []int) int {
+	m := ints[len(ints)-1]
+	tm := m
+	for i := len(ints) - 2; i >= 0; i-- {
+		tm += ints[i]
+		if tm > m {
+			m = tm
+		}
 	}
-	fmt.Printf("%v\n", ok)
-	fmt.Println(rep.String())
+	return m
 }
 
 func main() {
-	res = Res{}
-	sln("a", 1)
-	sln("asdf", 4)
-	sln("", 0)
-	sln(" ", 0)
-	sln("   ", 0)
-	sln("   ", 0)
-	sln("as   ", 2)
-	sln("a   asf   ", 3)
-	sln("asd   asdf", 4)
-	res.print()
+	printSubArr([]int{2, 1, -3, 4, -1, 2, 1, -5, 4})
+	printSubArr([]int{-2, -5, 6, -2, -3, 1, 5, -6})
+	printSubArr([]int{1, 2, 3})
+	printSubArr([]int{-2, -1})
+	printSubArr([]int{2, 1})
 }
 
-func sln(s string, expected int) {
-	l := lengthOfLastWord(s)
-	res = append(res, Submission{l == expected, l})
+func printSubArr(ints []int) {
+	fmt.Println(maxSubArray(ints))
 }
