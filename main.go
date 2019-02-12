@@ -1,28 +1,81 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+	"strings"
+)
 
-func rotate(nums []int, k int) {
-	k %= len(nums)
-	if k == 0 {
-		return
+type ListNode struct {
+	Val  int
+	Next *ListNode
+}
+
+func deleteDuplicates(head *ListNode) *ListNode {
+	if head == nil {
+		return nil
 	}
-	buf := make([]int, k)
-	copy(buf, nums[:k])
-	for i, ci := 0, 0; i < len(nums); i++ {
-		ni := (i + k) % len(nums)
-		tmp := nums[ni]
-		nums[ni] = buf[ci]
-		buf[ci] = tmp
-		ci++
-		if ci == len(buf) {
-			ci = 0
+
+	prev := head
+	for it := head.Next; it != nil; it = it.Next {
+		if it.Val == prev.Val {
+			prev.Next = it.Next
+			continue
 		}
+		prev = it
 	}
+	return head
+}
+
+func stringList(head *ListNode) string {
+	if head == nil {
+		return ""
+	}
+
+	b := strings.Builder{}
+	for it := head; it != nil; it = it.Next {
+		b.WriteString(fmt.Sprintf("%v, ", it.Val))
+	}
+
+	s := b.String()
+	return s[:len(s)-2]
+}
+
+func toList(nums []int) *ListNode {
+	if nums == nil || len(nums) == 0 {
+		return nil
+	}
+
+	head := &ListNode{
+		Val: nums[0],
+	}
+	tail := head
+	for i := 1; i < len(nums); i++ {
+		tail.Next = &ListNode{
+			Val: nums[i],
+		}
+		tail = tail.Next
+	}
+
+	return head
 }
 
 func main() {
-	nums := []int{1, 2, 3, 4, 5, 6, 7}
-	rotate(nums, 3)
+	printSln(nil)
+	printSln([]int{1})
+	printSln([]int{1, 1, 1})
+	printSln([]int{1, 2, 3, 4, 5, 6, 7})
+	printSln([]int{1, 2, 3, 4, 5, 5, 5, 6, 7})
+	printSln([]int{3, 3, 3, 145, 4, 4, 4})
+	printSln([]int{6, 5, 5, 6, 5, 5})
+}
+
+func printSln(nums []int) {
 	fmt.Println(nums)
+
+	list := toList(nums)
+	fmt.Println(stringList(list))
+
+	cleanedList := deleteDuplicates(list)
+	fmt.Println(stringList(cleanedList))
+	fmt.Println()
 }
