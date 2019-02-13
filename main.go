@@ -3,7 +3,7 @@ package main
 import (
 	"fmt"
 	"github.com/pkg/errors"
-	"strconv"
+
 	"strings"
 )
 
@@ -24,38 +24,69 @@ func addBinary(a string, b string) string {
 		return a
 	}
 
-	less := len(a)
-	if len(b) < len(a) {
-		less = len(b)
-	}
+	return addBinaryInternal(a, b)
+}
 
+func addBinaryInternal(a string, b string) string {
+	res := make([]uint8, 0, len(a)+len(b))
 	var rem uint8 = 0
-	res := make([]string, 0, len(a)+len(b))
-	i := less - 1
-	for ; i >= 0; i-- {
-		// todo check the numers are valid
-		l, err := charToNum(a[i])
+	bTail := len(b) - 1
+	aTail := len(a) - 1
+
+	for ; aTail >= 0 && bTail >= 0; aTail, bTail = aTail-1, bTail-1 {
+		aDigit, err := charToNum(a[aTail])
 		if err != nil {
 			return ""
 		}
 
-		r, err := charToNum(b[i])
+		bDigit, err := charToNum(b[bTail])
 		if err != nil {
 			return ""
 		}
 
-		sum := l + r + rem
-		digit := sum % 2
-		res = append(res, strconv.Itoa(int(digit)))
-		rem = sum - digit
+		s := aDigit + bDigit + rem
+		d := s % 2
+		res = append(res, d)
+		rem = s - d
 	}
 
-	return strings.Join(res, "")
+	for ; aTail >= 0; aTail-- {
+		aDigit, err := charToNum(a[aTail])
+		if err != nil {
+			return ""
+		}
+		s := aDigit + rem
+		d := s % 2
+		res = append(res, d)
+		rem = s - d
+	}
+
+	for ; bTail >= 0; bTail-- {
+		bDigit, err := charToNum(b[bTail])
+		if err != nil {
+			return ""
+		}
+		s := bDigit + rem
+		d := s % 2
+		res = append(res, d)
+		rem = s - d
+	}
+
+	for ; rem > 0; rem-- {
+		res = append(res, 1)
+	}
+
+	sr := strings.Builder{}
+	for i := len(res) - 1; i >= 0; i-- {
+		sr.WriteString(fmt.Sprint(res[i]))
+	}
+	return sr.String()
 }
 
 func main() {
-	//fmt.Println(addBinary("000", "111"))
 	//fmt.Println(addBinary("000", "101"))
-	//fmt.Println(addBinary("", "101"))
+	fmt.Println(addBinary("100", "11"))
+	fmt.Println(addBinary("11", "111"))
+	fmt.Println(addBinary("", "101"))
 	fmt.Println(addBinary("1", "101"))
 }
