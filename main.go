@@ -2,61 +2,40 @@ package main
 
 import "fmt"
 
-type ListNode struct {
-	Val  int
-	Next *ListNode
-}
-
-func hasCycleConstSpace(head *ListNode) bool {
-	for slow := head; slow != nil; slow = slow.Next {
-		for fast, i := slow.Next, 0; fast != nil && i < 2; fast, i = fast.Next, i+1 {
-			if fast == slow {
-				return true
-			}
-			slow.Next = fast
+func judgeCircle(moves string) bool {
+	const u = 'U'
+	const d = 'D'
+	const r = 'R'
+	const l = 'L'
+	m := make(map[uint8]int, 2)
+	m[u] = 0
+	m[r] = 0
+	for i := 0; i < len(moves); i++ {
+		switch moves[i] {
+		case u:
+			m[u]++
+		case d:
+			m[u]--
+		case r:
+			m[r]++
+		case l:
+			m[r]--
+		default:
+			return false
 		}
 	}
 
-	return false
-}
-
-func hasCycle(head *ListNode) bool {
-	visited := make(map[*ListNode]struct{})
-	for it := head; it != nil; it = it.Next {
-		if _, ok := visited[it]; ok {
-			return true
+	for _, v := range m {
+		if v != 0 {
+			return false
 		}
-		visited[it] = struct{}{}
 	}
-	return false
+
+	return true
 }
 
 func main() {
-	head := &ListNode{
-		Val: 1,
-		Next: &ListNode{
-			Val: 2,
-			Next: &ListNode{
-				Val:  3,
-				Next: nil,
-			},
-		},
-	}
-	fmt.Println(hasCycleConstSpace(head))
-
-	headL := &ListNode{
-		Val: 4,
-	}
-	headC := &ListNode{
-		Val: 1,
-		Next: &ListNode{
-			Val: 2,
-			Next: &ListNode{
-				Val:  3,
-				Next: headL,
-			},
-		},
-	}
-	headL.Next = headC
-	fmt.Println(hasCycleConstSpace(headC))
+	fmt.Println(judgeCircle("UUDD"))
+	fmt.Println(judgeCircle("LL"))
+	fmt.Println(judgeCircle("RLUURDDDLU"))
 }
