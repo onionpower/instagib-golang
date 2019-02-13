@@ -7,28 +7,25 @@ func judgeCircle(moves string) bool {
 	const d = 'D'
 	const r = 'R'
 	const l = 'L'
-	m := make(map[uint8]int, 2)
-	m[u] = 0
-	m[r] = 0
+	up := 0
+	right := 0
 	for i := 0; i < len(moves); i++ {
 		switch moves[i] {
 		case u:
-			m[u]++
+			up++
 		case d:
-			m[u]--
+			up--
 		case r:
-			m[r]++
+			right++
 		case l:
-			m[r]--
+			right--
 		default:
 			return false
 		}
 	}
 
-	for _, v := range m {
-		if v != 0 {
-			return false
-		}
+	if up != 0 || right != 0 {
+		return false
 	}
 
 	return true
