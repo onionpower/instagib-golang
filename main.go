@@ -2,80 +2,60 @@ package main
 
 import (
 	"fmt"
+	"github.com/pkg/errors"
+	"strconv"
 	"strings"
 )
 
-type ListNode struct {
-	Val  int
-	Next *ListNode
+//todo make it with strconv
+
+func charToNum(r uint8) (uint8, error) {
+	if r < '0' || r > '9' {
+		return 0, errors.New("")
+	}
+	return r - '0', nil
 }
 
-func deleteDuplicates(head *ListNode) *ListNode {
-	if head == nil {
-		return nil
+func addBinary(a string, b string) string {
+	if a == "" {
+		return b
+	}
+	if b == "" {
+		return a
 	}
 
-	prev := head
-	for it := head.Next; it != nil; it = it.Next {
-		if it.Val == prev.Val {
-			prev.Next = it.Next
-			continue
+	less := len(a)
+	if len(b) < len(a) {
+		less = len(b)
+	}
+
+	var rem uint8 = 0
+	res := make([]string, 0, len(a)+len(b))
+	i := less - 1
+	for ; i >= 0; i-- {
+		// todo check the numers are valid
+		l, err := charToNum(a[i])
+		if err != nil {
+			return ""
 		}
-		prev = it
-	}
-	return head
-}
 
-func stringList(head *ListNode) string {
-	if head == nil {
-		return ""
-	}
-
-	b := strings.Builder{}
-	for it := head; it != nil; it = it.Next {
-		b.WriteString(fmt.Sprintf("%v, ", it.Val))
-	}
-
-	s := b.String()
-	return s[:len(s)-2]
-}
-
-func toList(nums []int) *ListNode {
-	if nums == nil || len(nums) == 0 {
-		return nil
-	}
-
-	head := &ListNode{
-		Val: nums[0],
-	}
-	tail := head
-	for i := 1; i < len(nums); i++ {
-		tail.Next = &ListNode{
-			Val: nums[i],
+		r, err := charToNum(b[i])
+		if err != nil {
+			return ""
 		}
-		tail = tail.Next
+
+		sum := l + r + rem
+		digit := sum % 2
+		res = append(res, strconv.Itoa(int(digit)))
+		rem = sum - digit
 	}
 
-	return head
+	return strings.Join(res, "")
 }
 
 func main() {
-	printSln(nil)
-	printSln([]int{1})
-	printSln([]int{1, 1, 1})
-	printSln([]int{1, 2, 3, 4, 5, 6, 7})
-	printSln([]int{1, 2, 3, 4, 5, 5, 5, 6, 7})
-	printSln([]int{3, 3, 3, 145, 4, 4, 4})
-	printSln([]int{6, 5, 5, 6, 5, 5})
-}
-
-func printSln(nums []int) {
-	fmt.Println(nums)
-
-	list := toList(nums)
-	fmt.Println(stringList(list))
-
-	cleanedList := deleteDuplicates(list)
-	fmt.Println(stringList(cleanedList))
-	fmt.Println()
+	//fmt.Println(addBinary("000", "111"))
+	//fmt.Println(addBinary("000", "101"))
+	//fmt.Println(addBinary("", "101"))
+	fmt.Println(addBinary("1", "101"))
 }
