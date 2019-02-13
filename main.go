@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"github.com/pkg/errors"
+	"strconv"
 
 	"strings"
 )
@@ -16,6 +17,32 @@ func charToNum(r uint8) (uint8, error) {
 	return r - '0', nil
 }
 
+func charsToNum(l uint8, r uint8) (uint8, uint8, error) {
+	li, err := charToNum(l)
+	if err != nil {
+		return 0, 0, errors.New("convert err")
+	}
+
+	ri, err := charToNum(r)
+	if err != nil {
+		return 0, 0, errors.New("convert err")
+	}
+
+	return li, ri, nil
+}
+
+func addBinaryInternal2(a string, b string) string {
+	ai, err := strconv.ParseInt(a, 2, 64)
+	if err != nil {
+		return ""
+	}
+	bi, err := strconv.ParseInt(b, 2, 64)
+	if err != nil {
+		return ""
+	}
+	return strconv.FormatInt(ai+bi, 2)
+}
+
 func addBinary(a string, b string) string {
 	if a == "" {
 		return b
@@ -24,32 +51,33 @@ func addBinary(a string, b string) string {
 		return a
 	}
 
-	return addBinaryInternal(a, b)
+	return addBinaryInternal2(a, b)
 }
 
-func addBinaryInternal(a string, b string) string {
+func add(a uint8, b uint8, o uint8) (uint8, uint8) {
+	s := a + b + o
+	d := s % 2
+	if s > 1 {
+		return d, 1
+	}
+	return d, 0
+}
+
+func addBinaryInternal1(a string, b string) string {
 	res := make([]uint8, 0, len(a)+len(b))
-	var rem uint8 = 0
+	var o uint8 = 0
+	var d uint8
 	bTail := len(b) - 1
 	aTail := len(a) - 1
 
 	for ; aTail >= 0 && bTail >= 0; aTail, bTail = aTail-1, bTail-1 {
-		aDigit, err := charToNum(a[aTail])
+		aDigit, bDigit, err := charsToNum(a[aTail], b[bTail])
 		if err != nil {
 			return ""
 		}
 
-		bDigit, err := charToNum(b[bTail])
-		if err != nil {
-			return ""
-		}
-
-		rem += aDigit + bDigit
-		d := rem % 2
+		d, o = add(aDigit, bDigit, o)
 		res = append(res, d)
-		if rem > 0 {
-			rem--
-		}
 	}
 
 	for ; aTail >= 0; aTail-- {
@@ -57,12 +85,9 @@ func addBinaryInternal(a string, b string) string {
 		if err != nil {
 			return ""
 		}
-		rem += aDigit
-		d := rem % 2
+
+		d, o = add(aDigit, 0, o)
 		res = append(res, d)
-		if rem > 0 {
-			rem--
-		}
 	}
 
 	for ; bTail >= 0; bTail-- {
@@ -70,18 +95,12 @@ func addBinaryInternal(a string, b string) string {
 		if err != nil {
 			return ""
 		}
-		rem += bDigit
-		d := rem % 2
+
+		d, o = add(bDigit, 0, o)
 		res = append(res, d)
-		if rem > 0 {
-			rem--
-		}
 	}
 
-	if rem > 0 {
-		for ; rem > 1; rem-- {
-			res = append(res, 0)
-		}
+	if o > 0 {
 		res = append(res, 1)
 	}
 
@@ -98,4 +117,9 @@ func main() {
 	fmt.Println(addBinary("11", "111"))
 	fmt.Println(addBinary("", "101"))
 	fmt.Println(addBinary("1", "101"))
+	fmt.Println(addBinary("1111", "1111"))
+	fmt.Println(addBinary("11", "11010010"))
+	fmt.Println(addBinary(
+		"10100000100100110110010000010101111011011001101110111111111101000000101111001110001111100001101",
+		"110101001011101110001111100110001010100001101011101010000011011011001011101111001100000011011110011"))
 }
