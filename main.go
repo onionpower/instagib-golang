@@ -44,10 +44,12 @@ func addBinaryInternal(a string, b string) string {
 			return ""
 		}
 
-		s := aDigit + bDigit + rem
-		d := s % 2
+		rem += aDigit + bDigit
+		d := rem % 2
 		res = append(res, d)
-		rem = s - d
+		if rem > 0 {
+			rem--
+		}
 	}
 
 	for ; aTail >= 0; aTail-- {
@@ -55,10 +57,12 @@ func addBinaryInternal(a string, b string) string {
 		if err != nil {
 			return ""
 		}
-		s := aDigit + rem
-		d := s % 2
+		rem += aDigit
+		d := rem % 2
 		res = append(res, d)
-		rem = s - d
+		if rem > 0 {
+			rem--
+		}
 	}
 
 	for ; bTail >= 0; bTail-- {
@@ -66,13 +70,18 @@ func addBinaryInternal(a string, b string) string {
 		if err != nil {
 			return ""
 		}
-		s := bDigit + rem
-		d := s % 2
+		rem += bDigit
+		d := rem % 2
 		res = append(res, d)
-		rem = s - d
+		if rem > 0 {
+			rem--
+		}
 	}
 
-	for ; rem > 0; rem-- {
+	if rem > 0 {
+		for ; rem > 1; rem-- {
+			res = append(res, 0)
+		}
 		res = append(res, 1)
 	}
 
@@ -84,7 +93,7 @@ func addBinaryInternal(a string, b string) string {
 }
 
 func main() {
-	//fmt.Println(addBinary("000", "101"))
+	fmt.Println(addBinary("000", "101"))
 	fmt.Println(addBinary("100", "11"))
 	fmt.Println(addBinary("11", "111"))
 	fmt.Println(addBinary("", "101"))
