@@ -8,11 +8,12 @@ type ListNode struct {
 }
 
 func hasCycleConstSpace(head *ListNode) bool {
-	for it1 := head; it1 != nil; it1 = it1.Next {
-		for it2 := it1.Next; it2 != nil; it2 = it2.Next {
-			if it2 == it1 {
+	for slow := head; slow != nil; slow = slow.Next {
+		for fast, i := slow.Next, 0; fast != nil && i < 2; fast, i = fast.Next, i+1 {
+			if fast == slow {
 				return true
 			}
+			slow.Next = fast
 		}
 	}
 
