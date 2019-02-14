@@ -2,37 +2,31 @@ package main
 
 import "fmt"
 
-func judgeCircle(moves string) bool {
-	const u = 'U'
-	const d = 'D'
-	const r = 'R'
-	const l = 'L'
-	up := 0
-	right := 0
-	for i := 0; i < len(moves); i++ {
-		switch moves[i] {
-		case u:
-			up++
-		case d:
-			up--
-		case r:
-			right++
-		case l:
-			right--
-		default:
-			return false
-		}
+func plusOne(digits []int) []int {
+	if digits == nil {
+		return []int{1}
 	}
 
-	if up != 0 || right != 0 {
-		return false
+	return plusOneInternal(digits)
+}
+
+func plusOneInternal(digits []int) []int {
+	o := 1
+	for i := len(digits) - 1; i >= 0; i-- {
+		t := digits[i] + o
+		digits[i] = t % 10
+		o = int(t / 10)
 	}
 
-	return true
+	if o > 0 {
+		return append([]int{1}, digits...)
+	}
+
+	return digits
 }
 
 func main() {
-	fmt.Println(judgeCircle("UUDD"))
-	fmt.Println(judgeCircle("LL"))
-	fmt.Println(judgeCircle("RLUURDDDLU"))
+	fmt.Println(plusOne([]int{1, 2, 0}))
+	fmt.Println(plusOne([]int{1, 0, 1}))
+	fmt.Println(plusOne([]int{9, 9}))
 }
