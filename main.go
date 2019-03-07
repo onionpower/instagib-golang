@@ -1,34 +1,27 @@
 package main
 
-import (
-	"fmt"
-	_ "github.com/segmentio/kafka-go/lz4"
-)
+import "fmt"
 
-func myPow(x float64, n int) float64 {
-	if n == 0 {
-		return 1
+func numJewelsInStones(J string, S string) int {
+	jewels := make(map[int32]bool, len(J))
+	for _, j := range J {
+		jewels[j] = true
 	}
-	if n < 0 {
-		n = -n
-		x = 1 / x
-	}
-	return myPowInternal(x, n)
-}
 
-func myPowInternal(f float64, i int) float64 {
-	var res float64 = 1
-	for ; i > 0; i = i >> 1 {
-		if i&1 == 1 {
-			res *= f
+	own := 0
+	for _, s := range S {
+		if jewels[s] == true {
+			own++
 		}
-
-		f = f * f
 	}
-	return res
+
+	return own
 }
 
 func main() {
-	fmt.Println(myPow(4, 5))
-	fmt.Println(myPow(4, -2))
+	printSln("jak", "jjjjaaauUu")
+}
+
+func printSln(j string, s string) {
+	fmt.Printf("%v %v %v\n", j, s, numJewelsInStones(j, s))
 }
