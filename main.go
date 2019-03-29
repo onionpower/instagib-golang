@@ -1,96 +1,53 @@
 package main
 
 import (
-	"errors"
 	"fmt"
 )
 
-const Rook = 'R'
-const Pawn = 'p'
-const Empty = '.'
-const FieldLen = 8
-
-func numRookCaptures(board [][]byte) int {
-	x, y := findRook(board)
-	captures := 0
-	for h := x - 1; h >= 0; h-- {
-		if board[y][h] == Pawn {
-			captures++
-			break
-		}
-		if board[y][h] != Empty {
-			break
-		}
+func maxInt(a, b int) int {
+	if a > b {
+		return a
 	}
-	for h := x + 1; h < FieldLen; h++ {
-		if board[y][h] == Pawn {
-			captures++
-			break
-		}
-		if board[y][h] != Empty {
-			break
-		}
-	}
-	for h := y - 1; h >= 0; h-- {
-		if board[y][h] == Pawn {
-			captures++
-			break
-		}
-		if board[y][h] != Empty {
-			break
-		}
-	}
-	for h := y + 1; h < FieldLen; h++ {
-		if board[y][h] == Pawn {
-			captures++
-			break
-		}
-		if board[y][h] != Empty {
-			break
-		}
-	}
-	return captures
+	return b
 }
 
-func findRook(bytes [][]byte) (int, int) {
-	for x, row := range bytes {
-		for y, cell := range row {
-			if cell == Rook {
-				return y, x
-			}
-		}
+func lengthOfLongestSubstring(s string) int {
+	if len(s) < 2 {
+		return len(s)
 	}
 
-	panic(errors.New("it's a lie!"))
+	symbols := make(map[uint8]int)
+	max := 0
+	for l, r := 0, 0; r < len(s); r++ {
+		char := s[r]
+		ix, found := symbols[char]
+		if found {
+			l = maxInt(l, ix)
+		}
+		symbols[char] = r + 1
+		max = maxInt(max, r-l+1)
+	}
+	return max
 }
 
 func main() {
-	a := [][]string{
-		{".", ".", ".", ".", ".", ".", ".", "."},
-		{".", ".", ".", ".", ".", ".", ".", "."},
-		{".", ".", ".", ".", ".", ".", ".", "."},
-		{".", ".", ".", "R", ".", ".", ".", "."},
-		{".", ".", ".", ".", ".", ".", ".", "."},
-		{".", ".", ".", ".", ".", ".", ".", "."},
-		{".", ".", ".", ".", ".", ".", ".", "."},
-		{".", ".", ".", ".", ".", ".", ".", "."}}
-	printSln(a)
+	s := "asdf"
+	assert(s, 4)
+	s = "aadf"
+	assert(s, 3)
+	s = "asdd"
+	assert(s, 3)
+	s = "aadd"
+	assert(s, 2)
+	s = "pwwkew"
+	assert(s, 3)
 }
 
-func toBytes(s [][]string) [][]byte {
-	res := make([][]byte, 0, 8)
-	for _, r := range s {
-		resRow := make([]byte, 0, 8)
-		for _, s := range r {
-			resRow = append(resRow, byte(s[0]))
-		}
-		res = append(res, resRow)
+func assert(s string, expected int) {
+	l := lengthOfLongestSubstring(s)
+	report := fmt.Sprintf("%v\ngot: %v\nexpected: %v", s, l, expected)
+	if l != expected {
+		panic(report)
 	}
-	return res
-}
-
-func printSln(board [][]string) {
-	a := toBytes(board)
-	fmt.Println(board)
-	fmt.Printf("captures: %v\n", numRookCaptures(a))
+	fmt.Println(report)
 }

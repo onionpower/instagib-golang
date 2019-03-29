@@ -2,18 +2,8 @@ package main
 
 import "testing"
 
-func BenchmarkCaptures(b *testing.B) {
-	board := [][]string{
-		{".", ".", ".", ".", ".", ".", ".", "."},
-		{".", ".", ".", ".", ".", ".", ".", "."},
-		{".", ".", ".", ".", ".", ".", ".", "."},
-		{".", ".", ".", "R", ".", ".", ".", "."},
-		{".", ".", ".", ".", ".", ".", ".", "."},
-		{".", ".", ".", ".", ".", ".", ".", "."},
-		{".", ".", ".", ".", ".", ".", ".", "."},
-		{".", ".", ".", ".", ".", ".", ".", "."}}
-	a := toBytes(board)
+func BenchmarkLongestLength(b *testing.B) {
 	for i := 0; i < b.N; i++ {
-		numRookCaptures(a)
+		lengthOfLongestSubstring("pwwke")
 	}
 }
