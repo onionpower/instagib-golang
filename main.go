@@ -3,15 +3,15 @@ package main
 import (
 	"fmt"
 	bc "instagob/basicconcurrency"
-	"time"
 )
 
 func main() {
-	ch := make(chan string)
-	go bc.Boring("boring", ch)
-	go bc.Listen(ch)
-	fmt.Println("listening")
-	time.Sleep(time.Duration(2) * time.Second)
-	close(ch)
-	fmt.Println("i'm done")
+	fmt.Println(10e2)
+	ch := bc.BoringGen("me")
+	ach := bc.BoringGen("you")
+	for i := 0; i < 25; i++ {
+		fmt.Println(<-ch)
+		fmt.Println(<-ach)
+	}
+	fmt.Println("done")
 }
