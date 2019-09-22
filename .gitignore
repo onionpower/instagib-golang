@@ -1,3 +1,10 @@
+/bin
+/vendor
+/vendor.pb
+.DS_STORE
+/.idea
+/.idea/workspace.xml
+
 # Binaries for programs and plugins
 *.exe
 *.exe~
