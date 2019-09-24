@@ -1,16 +1,14 @@
 package main
 
 import (
-	"fmt"
 	bc "instagob/basicconcurrency"
 )
 
 func main() {
-	fmt.Println(10e2)
-	ch := bc.FanIn(bc.BoringGen("me"), bc.BoringGen("you"))
-
-	for i := 0; i < 25; i++ {
-		fmt.Println(<-ch)
-	}
-	fmt.Println("done")
+	wait1 := make(chan bool)
+	ch1 := bc.BoringGen("you", wait1)
+	wait2 := make(chan bool)
+	ch2 := bc.BoringGen("me", wait2)
+	ch := bc.FanIn(ch1, ch2)
+	bc.Listen(ch)
 }
