@@ -59,3 +59,22 @@ func FanIn(ch1, ch2 <-chan Msg) chan string {
 	}()
 	return ch
 }
+
+func DaisyChan(n int) {
+	leftmost := make(chan int)
+	l := leftmost
+	r := leftmost
+	for i := 0; i < n; i++ {
+		r = make(chan int)
+		go f(l, r)
+		l = r
+	}
+	go func(c chan int) {
+		c <- 1
+	}(r)
+	fmt.Println(<-leftmost)
+}
+
+func f(l, r chan int) {
+	l <- 1 + <-r
+}
