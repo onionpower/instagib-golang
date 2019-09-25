@@ -25,14 +25,19 @@ func Listen(ch chan string) {
 	}
 }
 
-func BoringGen(msg string, wait chan bool) <-chan Msg {
+func BoringGen(msg string, quit chan string) <-chan Msg {
 	ch := make(chan Msg)
 	go func() {
+		st := time.Now()
 		for {
 			dur := time.Duration(rand.Intn(1e2)) * time.Millisecond
 			ch <- Msg{
 				fmt.Sprintf("%v boring %v", msg, dur),
-				wait,
+				nil,
+			}
+			if time.Since(st) > 3*time.Second {
+				quit <- "go away"
+				return
 			}
 			time.Sleep(dur)
 		}
