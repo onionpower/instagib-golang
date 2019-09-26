@@ -35,6 +35,15 @@ func main() {
 		fmt.Println(time.Since(now))
 	})
 
+	http.HandleFunc("/fffuuu.png", func(wr http.ResponseWriter, r *http.Request) {
+		now := time.Now()
+		b := htmltopdf.GenImage("http://localhost:5008/fffuuu.html")
+		wr.WriteHeader(200)
+		wr.Header().Add("content-type", "application/pdf")
+		wr.Write(b)
+		fmt.Println(time.Since(now))
+	})
+
 	http.Handle("/metrics", promhttp.Handler())
 
 	if err := http.ListenAndServe(":5008", nil); err != nil {

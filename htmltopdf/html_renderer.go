@@ -3,8 +3,22 @@ package htmltopdf
 import (
 	"fmt"
 	p "github.com/SebastiaanKlippert/go-wkhtmltopdf"
+	"github.com/ninetwentyfour/go-wkhtmltoimage"
 	"log"
 )
+
+func GenImage(htmlUri string) []byte {
+	c := wkhtmltoimage.ImageOptions{
+		Input:      htmlUri,
+		Format:     "png",
+		BinaryPath: "/usr/local/bin/wkhtmltopdf"}
+	out, err := wkhtmltoimage.GenerateImage(&c)
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	return out
+}
 
 func GenPdf(htmlUri string) []byte {
 	pdfg, err := p.NewPDFGenerator()
