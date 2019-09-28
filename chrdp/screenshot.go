@@ -5,35 +5,20 @@ import (
 	"github.com/chromedp/cdproto/emulation"
 	"github.com/chromedp/cdproto/page"
 	"github.com/chromedp/chromedp"
-	"io/ioutil"
 	"log"
 	"math"
-	"time"
 )
 
-func MakeScreenshot() {
+func MakeScreenshot() []byte {
 	ctx, cancel := chromedp.NewContext(context.Background())
 	defer cancel()
 
-	// capture screenshot of an element
 	var buf []byte
-	now := time.Now()
-	if err := chromedp.Run(ctx, elementScreenshot(`https://www.google.com/`, `#main`, &buf)); err != nil {
-		log.Fatal(err)
-	}
-	log.Println(time.Since(now))
-	if err := ioutil.WriteFile("elementScreenshot.png", buf, 0644); err != nil {
-		log.Fatal(err)
-	}
-	now = time.Now()
 	// capture entire browser viewport, returning png with quality=90
-	if err := chromedp.Run(ctx, fullScreenshot(`https://brank.as/`, 90, &buf)); err != nil {
+	if err := chromedp.Run(ctx, fullScreenshot(`https://www.google.com/`, 30, &buf)); err != nil {
 		log.Fatal(err)
 	}
-	log.Println(time.Since(now))
-	if err := ioutil.WriteFile("fullScreenshot.png", buf, 0644); err != nil {
-		log.Fatal(err)
-	}
+	return buf[:]
 }
 
 // elementScreenshot takes a screenshot of a specific element.
