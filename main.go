@@ -1,7 +1,13 @@
 package main
 
-import a "instagob/longestsubstringlen"
+import (
+	"fmt"
+	d "instagob/imgdraw"
+	"time"
+)
 
 func main() {
-	a.LongestSubstringLen()
+	now := time.Now()
+	d.Draw(200, 200)
+	fmt.Println(time.Since(now))
 }
