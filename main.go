@@ -1,7 +1,7 @@
 package main
 
-import a "instagob/longestsubstringlen"
+import "instagob/chrdp"
 
 func main() {
-	a.LongestSubstringLen()
+	chrdp.MakeScreenshot()
 }
