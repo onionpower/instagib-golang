@@ -1,6 +1,9 @@
 package longestsubstringlen
 
-import "fmt"
+import (
+	"fmt"
+	"testing"
+)
 
 func maxInt(a, b int) int {
 	if a > b {
@@ -48,4 +51,10 @@ func assert(s string, expected int) {
 		panic(report)
 	}
 	fmt.Println(report)
+}
+
+func BenchmarkLongestLength(b *testing.B) {
+	for i := 0; i < b.N; i++ {
+		lengthOfLongestSubstring("pwwke")
+	}
 }
