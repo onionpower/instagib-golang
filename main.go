@@ -10,15 +10,20 @@ import (
 )
 
 func main() {
-	fu, err := ioutil.ReadFile("./chrdp/fu.html")
+	fu, err := ioutil.ReadFile("./chrdp/label.html")
 	if err != nil {
 		fmt.Println(err)
 	}
+	fonts, err := ioutil.ReadFile("./chrdp/code128.ttf")
 
 	http.HandleFunc("/fu.html", func(wr http.ResponseWriter, r *http.Request) {
 		now := time.Now()
 		wr.Write(fu)
 		fmt.Println(time.Since(now))
+	})
+
+	http.HandleFunc("/code128.ttf", func(w http.ResponseWriter, r *http.Request) {
+		w.Write(fonts)
 	})
 
 	http.HandleFunc(`/fu.jpg`, func(w http.ResponseWriter, r *http.Request) {
@@ -31,6 +36,8 @@ func main() {
 	if err := http.ListenAndServe(":5008", nil); err != nil {
 		fmt.Println(err)
 	}
+
+	http.Handle("/chrdp/", http.StripPrefix("/chrdp/", http.FileServer(http.Dir("chrdp"))))
 }
 
 func benchmark(n int, url string) time.Duration {

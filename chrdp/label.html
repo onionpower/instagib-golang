@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <style>
+        @font-face {
+            font-family: WebCode128;
+            src: url("/code128.ttf");
+        }
+
+        .all {
+            text-align: center;
+        }
+
+        .bc-img {
+            font-weight: normal;
+            font-style: normal;
+            line-height: normal;
+            font-family: 'WebCode128', sans-serif;
+            font-size: 100px;
+        }
+
+        div.bc-img {
+            white-space: pre;
+        }
+
+        .body {
+            padding: 10px;
+            border: 2px solid;
+            width: 95%;
+            margin: 0 auto;
+        }
+
+        .seller {
+            text-align: left;
+            font-size: 40px;
+            font-weight: bold;
+        }
+
+        .order {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-size: 36px;
+            font-weight: bold;
+        }
+
+        .o-pkg {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-style: solid;
+            border-width: 2px 0 2px 2px;
+            margin-right: -10px;
+        }
+
+        .o-pkg-r {
+            background: black;
+            color: white;
+            padding: 5px;
+        }
+
+        .o-pkg-l {
+            padding: 5px;
+        }
+
+        .cl {
+            font-weight: bold;
+            text-align: left;
+        }
+
+        .cl-phone {
+            text-align: left;
+        }
+
+        .srt {
+            background: black;
+            color: white;
+            line-height: 2.2;
+            text-transform: uppercase;
+            font-size: 35px;
+            font-weight: bold;
+        }
+
+        .fulfilment {
+            text-transform: uppercase;
+            text-align: left;
+            font-size: 35px;
+            font-family: 'Courier New', Courier, monospace;
+        }
+
+        .ff-long {
+            font-weight: bold;
+            text-align: left;
+        }
+
+        .cl-addr {
+            text-align: left;
+
+        }
+
+        .dims {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-top: 1px solid;
+            margin-top: 20px;
+        }
+
+        .wi::after {
+            content: "x";
+            margin: 0 5px;
+        }
+
+        .h::after {
+            content: "x";
+            margin: 0 5px;
+        }
+
+        .l::after {
+            content: "мм";
+            margin: 0 5px;
+        }
+
+        .c::before {
+            content: "|";
+            margin: 0 5px;
+        }
+
+        .c::after {
+            content: " экз. |";
+            margin: 0 5px;
+        }
+
+        .we::after {
+            content: "г.";
+            margin: 0 5px;
+        }
+
+        .wi,
+        .h,
+        .l,
+        .c,
+        .we {
+            font-weight: bold;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="all">
+        <div class="top-bc">
+            <div class="pack">
+                Упаковано: {{date}}
+            </div>
+            <div class="bc-img">ÍÊÈrezon-id=Î</div>
+            <div class="rezon-id">
+                govnojopa
+            </div>
+        </div>
+        <div class="body">
+            <div class="seller">{{seller}}</div>
+            <div class="order">
+                <div class="order-num">{{order-num}}</div>
+                <div class="o-pkg">
+                    <div class="o-pkg-l">{{o-pkg-l}}</div>
+                    <div class="o-pkg-r">{{o-pkg-r}}</div>
+                </div>
+            </div>
+            <div class="cl">{{client}}</div>
+            <div class="cl-phone">{{client-phone}}</div>
+            <div class="srt">{{srt-route}}</div>
+            <div class="fulfilment">{{fulfilment}}</div>
+            <div class="ff-long">
+                ООО Интернет Решения подразделение МОСКВА_ХАБ_СЦ1
+            </div>
+            <div class="cl-addr">127521, г. Москва, Анненский пр-д, д. 3, стр. 2, Тел: +74957442961</div>
+            <div class="dims">
+                <span class="wi">40</span>
+                <span class="h">30</span>
+                <span class="l">20</span>
+                <span class="c">1</span>
+                <span class="we">160</span>
+            </div>
+        </div>
+        <div class="bot-bc">
+            <div class="lozon-id">
+                jopagovno
+            </div>
+            <div class="bc-img">ÍÊÈjopagovnoBÎ</div>
+            <div class="pack">
+                Доставка: {{date}}
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>
