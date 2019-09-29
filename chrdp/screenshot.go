@@ -9,25 +9,16 @@ import (
 	"math"
 )
 
-func MakeScreenshot() []byte {
+func MakeScreenshot(url string) []byte {
 	ctx, cancel := chromedp.NewContext(context.Background())
 	defer cancel()
 
 	var buf []byte
 	// capture entire browser viewport, returning png with quality=90
-	if err := chromedp.Run(ctx, fullScreenshot(`https://www.google.com/`, 30, &buf)); err != nil {
+	if err := chromedp.Run(ctx, fullScreenshot(url, 10, &buf)); err != nil {
 		log.Fatal(err)
 	}
 	return buf[:]
-}
-
-// elementScreenshot takes a screenshot of a specific element.
-func elementScreenshot(urlstr, sel string, res *[]byte) chromedp.Tasks {
-	return chromedp.Tasks{
-		chromedp.Navigate(urlstr),
-		chromedp.WaitVisible(sel, chromedp.ByID),
-		chromedp.Screenshot(sel, res, chromedp.NodeVisible, chromedp.ByID),
-	}
 }
 
 // fullScreenshot takes a screenshot of the entire browser viewport.
