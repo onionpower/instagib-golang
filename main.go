@@ -1,7 +1,9 @@
 package main
 
-import a "instagob/longestsubstringlen"
+import (
+	bc "instagob/basicconcurrency"
+)
 
 func main() {
-	a.LongestSubstringLen()
+	bc.DaisyChan(50)
 }
