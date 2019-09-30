@@ -3,21 +3,23 @@ package main
 import (
 	"fmt"
 	s "instagob/structs"
-	"math/rand"
 )
 
 func main() {
-	a := make([]int64, 0)
-	for i := 0; i < 30; i++ {
+	a := make([]int64, 0, 6)
+	for i := 17; i < 22; i++ {
 		a = append(a, int64(i))
 	}
-	h := s.NewBheap(a...)
+	h := s.NewMinHeap(a...)
 	fmt.Println(h)
-
-	a = make([]int64, 0)
-	for i := 0; i < 30; i++ {
-		a = append(a, int64(rand.Intn(50)))
+	err := h.Push(1)
+	err = h.Push(2)
+	err = h.Push(29)
+	err = h.Push(0)
+	fmt.Println(h)
+	h.Pop()
+	fmt.Print(h)
+	if err != nil {
+		fmt.Print(err)
 	}
-	h = s.NewBheap(a...)
-	fmt.Println(h)
 }
