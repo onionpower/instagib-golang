@@ -58,8 +58,10 @@ func (h *MinHeap) Pop() (int64, error) {
 	return v, nil
 }
 
-// 0 1 2 3 4
-// 1 2 3 4 5
-// 1
-// 2 3
-// 4 5 6
+func (h *MinHeap) Peek() (int64, error) {
+	if len(h.a) == 0 {
+		return 0, errors.New("heap is empty")
+	}
+
+	return h.a[0], nil
+}
