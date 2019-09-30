@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"html/template"
 	"instagob/chrdp"
 	"io/ioutil"
 	"net/http"
@@ -31,6 +32,19 @@ func main() {
 		b := chrdp.MakeScreenshot(`http://localhost:5008/fu.html`)
 		w.Write(b)
 		fmt.Println(time.Since(now))
+	})
+
+	http.HandleFunc(`/tfu.jpg`, func(w http.ResponseWriter, r *http.Request) {
+		t := template.New(`label.html`)
+		t, err := t.ParseFiles(`./chrdp/label.html`)
+		if err != nil {
+			fmt.Print(err)
+		}
+		l := chrdp.NewLabel()
+		err = t.Execute(w, l)
+		if err != nil {
+			fmt.Print(err)
+		}
 	})
 
 	if err := http.ListenAndServe(":5008", nil); err != nil {

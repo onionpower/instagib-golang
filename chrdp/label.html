@@ -12,8 +12,13 @@
             src: url("/code128.ttf");
         }
 
+        body {
+            height: 100vh;
+        }
+
         .all {
             text-align: center;
+            height: 100%;
         }
 
         .bc-img {
@@ -28,7 +33,16 @@
             white-space: pre;
         }
 
+        .top-bc {
+            height: 20%;
+        }
+
+        .bot-bc {
+            height: 20%;
+        }
+
         .body {
+            height: 60%;
             padding: 10px;
             border: 2px solid;
             width: 95%;
@@ -86,21 +100,20 @@
             font-weight: bold;
         }
 
-        .fulfilment {
+        .destination {
             text-transform: uppercase;
             text-align: left;
             font-size: 35px;
             font-family: 'Courier New', Courier, monospace;
         }
 
-        .ff-long {
+        .contractor {
             font-weight: bold;
             text-align: left;
         }
 
-        .cl-addr {
+        .dest-addr {
             text-align: left;
-
         }
 
         .dims {
@@ -152,51 +165,51 @@
 </head>
 
 <body>
-    <div class="all">
-        <div class="top-bc">
-            <div class="pack">
-                Упаковано: {{date}}
-            </div>
-            <div class="bc-img">ÍÊÈrezon-id=Î</div>
-            <div class="rezon-id">
-                govnojopa
-            </div>
+<div class="all">
+    <div class="top-bc">
+        <div class="pack">
+            Упаковано: {{.PackDate}}
         </div>
-        <div class="body">
-            <div class="seller">{{seller}}</div>
-            <div class="order">
-                <div class="order-num">{{order-num}}</div>
-                <div class="o-pkg">
-                    <div class="o-pkg-l">{{o-pkg-l}}</div>
-                    <div class="o-pkg-r">{{o-pkg-r}}</div>
-                </div>
-            </div>
-            <div class="cl">{{client}}</div>
-            <div class="cl-phone">{{client-phone}}</div>
-            <div class="srt">{{srt-route}}</div>
-            <div class="fulfilment">{{fulfilment}}</div>
-            <div class="ff-long">
-                ООО Интернет Решения подразделение МОСКВА_ХАБ_СЦ1
-            </div>
-            <div class="cl-addr">127521, г. Москва, Анненский пр-д, д. 3, стр. 2, Тел: +74957442961</div>
-            <div class="dims">
-                <span class="wi">40</span>
-                <span class="h">30</span>
-                <span class="l">20</span>
-                <span class="c">1</span>
-                <span class="we">160</span>
-            </div>
-        </div>
-        <div class="bot-bc">
-            <div class="lozon-id">
-                jopagovno
-            </div>
-            <div class="bc-img">ÍÊÈjopagovnoBÎ</div>
-            <div class="pack">
-                Доставка: {{date}}
-            </div>
+        <div class="bc-img">ÍÊÈBc{{.ReasonId}}ÃÎ</div>
+        <div class="reason-id">
+            {{.ReasonId}}
         </div>
     </div>
+    <div class="body">
+        <div class="seller">{{.Seller}}</div>
+        <div class="order">
+            <div class="order-num">{{.OrderNum}}</div>
+            <div class="o-pkg">
+                <div class="o-pkg-l">{{.OrderPkgL}}</div>
+                <div class="o-pkg-r">{{.OrderPkgR}}</div>
+            </div>
+        </div>
+        <div class="cl">{{.Client}}</div>
+        <div class="cl-phone">{{.ClientPhone}}</div>
+        <div class="srt">{{.SrtRoute}}</div>
+        <div class="destination">{{.Destination}}</div>
+        <div class="contractor">
+            {{.Contractor}}
+        </div>
+        <div class="dest-addr">{{.DestAddr}}</div>
+        <div class="dims">
+            <span class="wi">{{.Width}}</span>
+            <span class="h">{{.Height}}</span>
+            <span class="l">{{.Length}}</span>
+            <span class="c">{{.Count}}</span>
+            <span class="we">{{.Weight}}</span>
+        </div>
+    </div>
+    <div class="bot-bc">
+        <div class="lowzone-id">
+            {{.LowzoneId}}
+        </div>
+        <div class="bc-img">ÍÊÈ{{.LowzoneId}}.Î</div>
+        <div class="pack">
+            Доставка: {{.DeliveryDate}}
+        </div>
+    </div>
+</div>
 </body>
 
 </html>
