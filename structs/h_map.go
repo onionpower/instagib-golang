@@ -27,7 +27,7 @@ func NewHMap() *HMap {
 
 func (m *HMap) Add(key string, val int) {
 	// TODO resize
-	ix := m.hash(key) % uint32(len(m.bs))
+	ix := m.ix(key)
 	b := &m.bs[ix]
 	*b = append(*b, Bucket{
 		Key: key,
@@ -36,7 +36,7 @@ func (m *HMap) Add(key string, val int) {
 }
 
 func (m *HMap) Get(key string) (val int, err error) {
-	ix := m.hash(key) % uint32(len(m.bs))
+	ix := m.ix(key)
 	ab := m.bs[ix]
 	if ab == nil {
 		return 0, errors.New(fmt.Sprintf("there is no val corresponding to %v key", key))
@@ -51,12 +51,6 @@ func (m *HMap) Get(key string) (val int, err error) {
 	return 0, errors.New("something is wrong")
 }
 
-func (m *HMap) hash(key string) uint32 {
-	h := fnv.New32a()
-	h.Write([]byte(key))
-	return h.Sum32()
-}
-
 func (m *HMap) String() string {
 	s := ""
 	for _, ab := range m.bs {
@@ -67,4 +61,14 @@ func (m *HMap) String() string {
 		}
 	}
 	return s
+}
+
+func (m *HMap) hash(key string) uint32 {
+	h := fnv.New32a()
+	h.Write([]byte(key))
+	return h.Sum32()
+}
+
+func (m *HMap) ix(key string) uint32 {
+	return m.hash(key) % uint32(len(m.bs))
 }
