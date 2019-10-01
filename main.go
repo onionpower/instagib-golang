@@ -2,18 +2,14 @@ package main
 
 import (
 	"fmt"
-	"hash/fnv"
 	"instagob/structs"
 )
 
 func main() {
 	m := structs.NewHMap()
-	m.Add("a", 1)
+	for s := 'a'; s <= 'z'; s++ {
+		m.Add(string(s), int(s))
+	}
 	fmt.Println(m)
-}
-
-func Hash(s string) uint32 {
-	h := fnv.New32a()
-	h.Write([]byte(s))
-	return h.Sum32()
+	fmt.Print(m.Get("b"))
 }

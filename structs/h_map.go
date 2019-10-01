@@ -1,14 +1,14 @@
 package structs
 
 import (
+	"errors"
 	"fmt"
 	"hash/fnv"
 )
 
 type Bucket struct {
-	Key  string
-	Val  int
-	Next *Bucket
+	Key string
+	Val int
 }
 
 func (b Bucket) String() string {
@@ -16,26 +16,39 @@ func (b Bucket) String() string {
 }
 
 type HMap struct {
-	bs []*Bucket
+	bs [][]Bucket
 }
 
 func NewHMap() *HMap {
 	return &HMap{
-		bs: make([]*Bucket, 10, 10),
+		bs: make([][]Bucket, 10, 10),
 	}
 }
 
 func (m *HMap) Add(key string, val int) {
 	// TODO resize
 	ix := m.hash(key) % uint32(len(m.bs))
-	b := m.bs[ix]
-	for ; b == nil; b = b.Next {
-
-	}
-	b = &Bucket{
+	b := &m.bs[ix]
+	*b = append(*b, Bucket{
 		Key: key,
 		Val: val,
+	})
+}
+
+func (m *HMap) Get(key string) (val int, err error) {
+	ix := m.hash(key) % uint32(len(m.bs))
+	ab := m.bs[ix]
+	if ab == nil {
+		return 0, errors.New(fmt.Sprintf("there is no val corresponding to %v key", key))
 	}
+
+	for _, b := range ab {
+		if b.Key == key {
+			return b.Val, nil
+		}
+	}
+
+	return 0, errors.New("something is wrong")
 }
 
 func (m *HMap) hash(key string) uint32 {
@@ -46,11 +59,10 @@ func (m *HMap) hash(key string) uint32 {
 
 func (m *HMap) String() string {
 	s := ""
-	for _, b := range m.bs {
-		if b != nil {
-			s += b.String()
-			for n := b.Next; n != nil; n = n.Next {
-				s += n.String()
+	for _, ab := range m.bs {
+		if ab != nil {
+			for _, b := range ab {
+				s += b.String()
 			}
 		}
 	}
