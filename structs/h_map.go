@@ -36,10 +36,9 @@ func (m *HMap) Add(key string, val int) {
 }
 
 func (m *HMap) Get(key string) (val int, err error) {
-	ix := m.ix(key)
-	ab := m.bs[ix]
-	if ab == nil {
-		return 0, errors.New(fmt.Sprintf("there is no val corresponding to %v key", key))
+	ab, err := m.getBucket(key)
+	if err != nil {
+		return 0, err
 	}
 
 	for _, b := range ab {
@@ -49,6 +48,28 @@ func (m *HMap) Get(key string) (val int, err error) {
 	}
 
 	return 0, errors.New("something is wrong")
+}
+
+func (m *HMap) Delete(key string) error {
+	ab, err := m.getBucket(key)
+	if err != nil {
+		return 0, err
+	}
+
+	for _, b := range ab {
+		if b.Key == key {
+			return b.Val, nil
+		}
+	}
+}
+
+func (m *HMap) getBucket(key string) ([]Bucket, error) {
+	ix := m.ix(key)
+	ab := m.bs[ix]
+	if ab == nil {
+		return nil, errors.New(fmt.Sprintf("there is no val corresponding to %v key", key))
+	}
+	return ab, nil
 }
 
 func (m *HMap) String() string {
