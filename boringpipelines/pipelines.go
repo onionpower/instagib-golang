@@ -13,6 +13,15 @@ func Gen(n ...int) <-chan int {
 	return out
 }
 
+func GenBufd(n ...int) <-chan int {
+	out := make(chan int, len(n))
+	for _, v := range n {
+		out <- v
+	}
+	close(out)
+	return out
+}
+
 func Sq(in <-chan int) <-chan int {
 	out := make(chan int)
 	go func() {
