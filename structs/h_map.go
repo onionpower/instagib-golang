@@ -6,11 +6,7 @@ import (
 	"hash/fnv"
 )
 
-type KeyNotFoundErr error
-
-func NewKeyNotFound(key string) KeyNotFoundErr {
-	return errors.New(fmt.Sprintf("\"%v\" key not found", key))
-}
+var KeyNotFoundErr = errors.New("key not found")
 
 type Bucket struct {
 	Key string
@@ -34,6 +30,9 @@ func NewHMap() *HMap {
 func (m *HMap) Set(key string, val int) {
 	// TODO resize
 	ix := m.ix(key)
+	if m.bs[ix] == nil {
+		m.bs[ix] = make([]Bucket, 0)
+	}
 	b := m.bs[ix]
 	for bx := 0; bx < len(b); bx++ {
 		if b[bx].Key == key {
@@ -41,8 +40,8 @@ func (m *HMap) Set(key string, val int) {
 			return
 		}
 	}
-	abs := &m.bs[ix]
-	*abs = append(*abs, Bucket{
+	ab := &m.bs[ix]
+	*ab = append(*ab, Bucket{
 		Key: key,
 		Val: val,
 	})
@@ -60,30 +59,36 @@ func (m *HMap) Get(key string) (val int, err error) {
 		}
 	}
 
-	return 0, NewKeyNotFound(key)
+	return 0, KeyNotFoundErr
 }
 
 func (m *HMap) Delete(key string) error {
-	ab, err := m.getBucket(key)
-	if err != nil {
-		return err
+	ix := m.ix(key)
+	if m.bs[ix] == nil {
+		return KeyNotFoundErr
 	}
 
-	for bx, b := range ab {
-		if b.Key == key {
-			ab = append(ab[:bx], ab[bx+1])
+	b := m.bs[ix]
+	for bx := 0; bx < len(b); bx++ {
+		if b[bx].Key == key {
+			//if bx == len(ab) - 1 {
+			//	ab = ab[:bx]
+			//} else {
+			ab := &m.bs[ix]
+			*ab = append(b[:bx], b[bx+1:]...)
+			//}
 			return nil
 		}
 	}
 
-	return NewKeyNotFound(key)
+	return KeyNotFoundErr
 }
 
 func (m *HMap) getBucket(key string) ([]Bucket, error) {
 	ix := m.ix(key)
 	ab := m.bs[ix]
 	if ab == nil {
-		return nil, NewKeyNotFound(key)
+		return nil, KeyNotFoundErr
 	}
 	return ab, nil
 }
