@@ -8,6 +8,12 @@ import (
 
 var KeyNotFoundErr = errors.New("key not found")
 
+const (
+	minLoadF = 0.1
+	maxLoadF = 0.75
+	initLen  = 10
+)
+
 type Bucket struct {
 	Key string
 	Val int
@@ -18,17 +24,20 @@ func (b Bucket) String() string {
 }
 
 type HMap struct {
-	bs [][]Bucket
+	bs  [][]Bucket
+	len int
 }
 
 func NewHMap() *HMap {
 	return &HMap{
-		bs: make([][]Bucket, 10, 10),
+		len: 0,
+		bs:  make([][]Bucket, initLen, initLen),
 	}
 }
 
 func (m *HMap) Set(key string, val int) {
-	// TODO resize
+	defer m.rebalance()
+
 	ix := m.ix(key)
 	if m.bs[ix] == nil {
 		m.bs[ix] = make([]Bucket, 0)
@@ -45,6 +54,7 @@ func (m *HMap) Set(key string, val int) {
 		Key: key,
 		Val: val,
 	})
+	m.len++
 }
 
 func (m *HMap) Get(key string) (val int, err error) {
@@ -63,6 +73,8 @@ func (m *HMap) Get(key string) (val int, err error) {
 }
 
 func (m *HMap) Delete(key string) error {
+	defer m.rebalance()
+
 	ix := m.ix(key)
 	if m.bs[ix] == nil {
 		return KeyNotFoundErr
@@ -71,12 +83,9 @@ func (m *HMap) Delete(key string) error {
 	b := m.bs[ix]
 	for bx := 0; bx < len(b); bx++ {
 		if b[bx].Key == key {
-			//if bx == len(ab) - 1 {
-			//	ab = ab[:bx]
-			//} else {
 			ab := &m.bs[ix]
 			*ab = append(b[:bx], b[bx+1:]...)
-			//}
+			m.len--
 			return nil
 		}
 	}
@@ -113,4 +122,25 @@ func (m *HMap) hash(key string) uint32 {
 
 func (m *HMap) ix(key string) uint32 {
 	return m.hash(key) % uint32(len(m.bs))
+}
+
+func (m *HMap) rebalance() {
+	if !m.satisfiesLf() {
+		nb := make([][]Bucket, 2*m.len, 2*m.len)
+		for _, b := range m.bs {
+			if b != nil && len(b) > 0 {
+				ix := m.hash(b[0].Key) % uint32(len(nb))
+				nb[ix] = b
+			}
+		}
+		m.bs = nb
+	}
+}
+
+func (m *HMap) satisfiesLf() bool {
+	if m.len < initLen && len(m.bs) < initLen {
+		return true
+	}
+	lf := float32(m.len) / float32(len(m.bs))
+	return minLoadF < lf && lf < maxLoadF
 }

@@ -3,6 +3,7 @@ package structs
 import (
 	"errors"
 	"fmt"
+	"strconv"
 	"testing"
 )
 
@@ -49,5 +50,31 @@ func TestDeletedValueIsOutOfMap(t *testing.T) {
 	}
 	if !errors.Is(getErr, KeyNotFoundErr) {
 		t.Error(fmt.Sprintf("expected err is KeyNotFoundErr, but got %v", getErr))
+	}
+}
+
+func TestRebalanceToGreater(t *testing.T) {
+	m := NewHMap()
+	for i := 0; i < 400; i++ {
+		m.Set(string(i), 5)
+	}
+	if !m.satisfiesLf() {
+		t.Error("map internal array doesn't grows according when the load factor is out of bounds")
+	}
+}
+
+func TestRebalanceToLower(t *testing.T) {
+	m := NewHMap()
+	for i := 0; i < 400; i++ {
+		m.Set(strconv.Itoa(i), 5)
+	}
+	fmt.Println(len(m.bs))
+	for i := 1; i < 400; i++ {
+		err := m.Delete(strconv.Itoa(i))
+		fmt.Println(err)
+	}
+	fmt.Println(len(m.bs))
+	if !m.satisfiesLf() {
+		t.Error("map internal array doesn't grows according when the load factor is out of bounds")
 	}
 }
