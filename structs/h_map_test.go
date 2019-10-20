@@ -71,7 +71,9 @@ func TestRebalanceToLower(t *testing.T) {
 	fmt.Println(len(m.bs))
 	for i := 1; i < 400; i++ {
 		err := m.Delete(strconv.Itoa(i))
-		fmt.Println(err)
+		if err != nil {
+			t.Error(fmt.Sprintf("expected error is nul, but actual is %v", err))
+		}
 	}
 	fmt.Println(len(m.bs))
 	if !m.satisfiesLf() {

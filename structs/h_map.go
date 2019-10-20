@@ -129,8 +129,13 @@ func (m *HMap) rebalance() {
 		nb := make([][]Bucket, 2*m.len, 2*m.len)
 		for _, b := range m.bs {
 			if b != nil && len(b) > 0 {
-				ix := m.hash(b[0].Key) % uint32(len(nb))
-				nb[ix] = b
+				for _, v := range b {
+					ix := m.hash(v.Key) % uint32(len(nb))
+					if nb[ix] == nil {
+						nb[ix] = make([]Bucket, 0, 1)
+					}
+					nb[ix] = append(nb[ix], v)
+				}
 			}
 		}
 		m.bs = nb
@@ -138,7 +143,7 @@ func (m *HMap) rebalance() {
 }
 
 func (m *HMap) satisfiesLf() bool {
-	if m.len < initLen && len(m.bs) < initLen {
+	if m.len <= initLen && len(m.bs) <= initLen {
 		return true
 	}
 	lf := float32(m.len) / float32(len(m.bs))
