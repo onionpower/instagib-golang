@@ -13,6 +13,11 @@ func TestFibBotUp(t *testing.T) {
 	assert(f, t)
 }
 
+func TestFibMemo(t *testing.T) {
+	f := fibMemo(7)
+	assert(f, t)
+}
+
 func assert(f int, t *testing.T) {
 	if f != 8 {
 		t.Errorf("expected is %v, but actual is %v", 8, f)

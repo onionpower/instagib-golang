@@ -24,3 +24,32 @@ func fibBotUp(n int) int {
 
 	return m[n]
 }
+
+func fibMemo(n int) int {
+	if n <= 1 {
+		return 0
+	}
+
+	m := make([]int, n+1, n+1)
+	return fibMemM(n, &m)
+}
+
+func fibMemM(n int, mp *[]int) int {
+	m := *mp
+	if n <= 1 {
+		m[n] = 0
+		return m[n]
+	}
+
+	if n == 2 {
+		m[n] = 1
+		return m[n]
+	}
+
+	if m[n] != 0 {
+		return m[n]
+	}
+
+	m[n] = fibMemM(n-1, mp) + fibMemM(n-2, mp)
+	return m[n]
+}
