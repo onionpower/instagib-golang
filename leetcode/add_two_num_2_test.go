@@ -6,9 +6,15 @@ import (
 	"testing"
 )
 
-func TestAddTwoNumEqualLen(t *testing.T) {
-	//243 564
+func TestAddTwoNumWithMultipleM(t *testing.T) {
+	l1 := toLinkedList([]int{9, 9, 9, 9})
+	l2 := toLinkedList([]int{9})
+	hl3 := addTwoNumbers(l1, l2)
+	l3a := []int{8, 0, 0, 0, 1}
+	assertAddTwoNum(hl3, l3a, t)
+}
 
+func TestAddTwoNumEqualLen(t *testing.T) {
 	l1 := toLinkedList([]int{2, 4, 3})
 	l2 := toLinkedList([]int{5, 6, 4})
 	hl3 := addTwoNumbers(l1, l2)
@@ -20,11 +26,11 @@ func TestAddTwoNumFstIsEmpty(t *testing.T) {
 	l2 := toLinkedList([]int{5, 6, 4})
 	hl3 := addTwoNumbers(nil, l2)
 	assertAddTwoNum(hl3, []int{5, 6, 4}, t)
+	hl3 = addTwoNumbers(l2, nil)
+	assertAddTwoNum(hl3, []int{5, 6, 4}, t)
 }
 
 func TestAddTwoNumFstLonger(t *testing.T) {
-	//243 564
-
 	l1 := toLinkedList([]int{2, 4, 3, 3})
 	l2 := toLinkedList([]int{5, 6, 4})
 	hl3 := addTwoNumbers(l1, l2)
