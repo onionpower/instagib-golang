@@ -9,53 +9,35 @@ func addTwoNumbers(l1 *ListNode, l2 *ListNode) *ListNode {
 	h := &ListNode{}
 	it := h
 	m := 0
-
-	if l1 != nil && l2 != nil {
-		m = l1.Val + l2.Val
-		it.Val = m % 10
-		m /= 10
-
-		l1 = l1.Next
-		l2 = l2.Next
-	} else if l1 != nil {
-		it.Val = l1.Val
-		l1 = l1.Next
-	} else if l2 != nil {
-		it.Val = l2.Val
-		l2 = l2.Next
-	} else {
-		return nil
-	}
-
-	for ; l1 != nil && l2 != nil; it = it.Next {
-		it.Next = &ListNode{}
-		i := l1.Val + l2.Val + m
-		it.Next.Val = i % 10
+	for ; l1 != nil || l2 != nil; {
+		l := 0
+		if l1 != nil {
+			l = l1.Val
+		}
+		r := 0
+		if l2 != nil {
+			r = l2.Val
+		}
+		n := &ListNode{}
+		i := l + r + m
+		n.Val = i % 10
 		m = i / 10
 
-		l2 = l2.Next
-		l1 = l1.Next
-	}
+		if l2 != nil {
+			l2 = l2.Next
+		}
+		if l1 != nil {
+			l1 = l1.Next
+		}
 
-	for ; l2 != nil; it = it.Next {
-		it.Next = &ListNode{}
-		i := l2.Val + m
-		it.Next.Val = i % 10
-		m = i / 10
-		l2 = l2.Next
-	}
-
-	for ; l1 != nil; it = it.Next {
-		it.Next = &ListNode{}
-		i := l1.Val + m
-		it.Next.Val = i % 10
-		m = i / 10
-		l1 = l1.Next
+		it.Next = n
+		it = it.Next
 	}
 
 	if m != 0 {
 		it.Next = &ListNode{}
 		it.Next.Val = m
 	}
-	return h
+
+	return h.Next
 }

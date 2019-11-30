@@ -46,6 +46,7 @@ func assertAddTwoNum(hl3 *ListNode, l3a []int, t *testing.T) {
 	for _, v := range l3a {
 		if itl3.Val != v {
 			t.Errorf("actual is %v, but expected is %v", itl3.Val, v)
+			break
 		}
 		itl3 = itl3.Next
 	}
